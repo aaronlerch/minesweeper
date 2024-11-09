@@ -1,34 +1,36 @@
 public class Square {
-    private boolean _initialized;
+    private int _x;
+    private int _y;
+
     private boolean _covered;
     private boolean _hasMine;
     private boolean _flagged;
     private int _countAdjacentMines;
 
-    public Square() {
-        _initialized = false;
+    public Square(int x, int y) {
+        _x = x;
+        _y = y;
+
         _covered = true;
         _hasMine = false;
         _flagged = false;
         _countAdjacentMines = 0;
     }
 
-    public void initialize(boolean hasMine) {
-        if (_initialized) {
-            // Only allow initializing once (?)
-            return;
-        }
-
-        _hasMine = hasMine;
-        _initialized = true;
+    public int getX() {
+        return _x;
     }
 
-    public boolean getInitialized() {
-        return _initialized;
+    public int getY() {
+        return _y;
     }
 
     public boolean getHasMine() {
         return _hasMine;
+    }
+
+    public void setHasMine(boolean hasMine) {
+        _hasMine = hasMine;
     }
 
     public boolean getFlagged() {

@@ -16,8 +16,10 @@ public class MineFieldView extends JPanel {
         for (var r = 0; r < squares.length; r++) {
             var row = squares[r];
             for (var c = 0; c < row.length; c++) {
-                var tile = new SquareView(row[c]);
-                add(tile);
+                var squareView = new SquareView(_mineField, row[c]);
+                squareView.setPreferredSize(new Dimension(30, 30));
+
+                add(squareView);
             }
         }
     }
