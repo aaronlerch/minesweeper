@@ -85,11 +85,20 @@ public class MineField {
         square.toggleFlag();
     }
 
-    public void uncover(int x, int y) {
+    // Uncover a square and return true if it's a mine -- 💥 BOOM 💥
+    public boolean uncover(int x, int y) {
         var square = getSquare(x, y);
-        if (square == null) return;
+        if (square == null) return false;
 
         square.setCovered(false);
+        return square.getHasMine();
+    }
+
+    // This is used when the game is over (e.g. a mine was uncovered)
+    public void uncoverAll() {
+        forEachSquare( (square, x, y) -> {
+            square.setCovered(false);
+        });
     }
 
     interface OnAllFunction {
