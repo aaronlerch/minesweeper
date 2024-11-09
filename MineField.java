@@ -31,12 +31,24 @@ public class MineField {
         }
     }
 
+    public int getWidth() {
+        return _width;
+    }
+
+    public int getHeight() {
+        return _height;
+    }
+
     public Square getSquare(int x, int y) {
         if (x < 0 || y < 0 || x >= _width || y >= _height) {
             return null;
         }
 
         return _field[y][x];
+    }
+
+    public Square[][] getSquares() {
+        return _field;
     }
 
     public void setMines(int initialX, int initialY) {
