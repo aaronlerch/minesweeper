@@ -5,7 +5,7 @@ public class MineFieldView extends JPanel {
     private MineField _mineField;
 
     public MineFieldView(MineField mineField) {
-        super(new GridLayout(mineField.getWidth(), mineField.getHeight()));
+        super(new GridLayout(mineField.getHeight(), mineField.getWidth()));
         
         _mineField = mineField;
     }
