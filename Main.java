@@ -1,4 +1,3 @@
-import java.awt.*;
 import javax.swing.*;
 
 public class Main {
@@ -10,10 +9,8 @@ public class Main {
         var width = 20;
         var height = 20;
         var mf = new MineField(width, height);
-
         var view = new MineFieldView(mf);
-        view.addSquareViews();
-        
+
         window.add(view);
         window.pack();
 

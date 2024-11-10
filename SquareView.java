@@ -1,8 +1,9 @@
 import java.awt.*;
 import java.awt.event.*;
+
 import javax.swing.*;
 
-public class SquareView extends JPanel implements MouseListener {
+public class SquareView extends JPanel implements MouseListener, SquareChangedCallback {
     private final double _interiorScale = 0.6;
     
     private MineField _mineField;
@@ -11,11 +12,14 @@ public class SquareView extends JPanel implements MouseListener {
     public SquareView(MineField mineField, Square square) {
         _mineField = mineField;
         _square = square;
+        square.addSquareChangedCallback(this);
         addMouseListener(this);
     }
 
-    @Override
     public void mouseClicked(MouseEvent e) {
+    }
+
+    public void mousePressed(MouseEvent e) {
         var button = e.getButton();
 
         if (button == MouseEvent.BUTTON1) {
@@ -25,25 +29,16 @@ public class SquareView extends JPanel implements MouseListener {
             _mineField.flag(_square);
         }
 
-        var parent = getParent();
-        if (parent != null) {
-            parent.invalidate();
-            parent.validate();
-            parent.repaint();
-        }
+        //getParent().repaint();
+        //repaint();
     }
 
-    @Override
-    public void mousePressed(MouseEvent e) {
-    }
-
-    @Override
     public void mouseReleased(MouseEvent e) {
     }
 
     @Override
     public void mouseEntered(MouseEvent e) {
-        if (_square.getCovered()) {
+        if (!_square.getVisible()) {
             setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         }
     }
@@ -51,6 +46,12 @@ public class SquareView extends JPanel implements MouseListener {
     @Override
     public void mouseExited(MouseEvent e) {
         setCursor(Cursor.getDefaultCursor());
+    }
+
+    @Override
+    public void changed(Square square) {
+        // Something about the square changed, repaint
+        repaint();
     }
 
     @Override
@@ -68,7 +69,7 @@ public class SquareView extends JPanel implements MouseListener {
         var scaledRight = scaledX + scaledWidth;
         var scaledBottom = scaledY + scaledHeight;
 
-        if (_square.getCovered()) {
+        if (!_square.getVisible()) {
             var preBGColor = g.getColor();
             g.setColor(Color.LIGHT_GRAY);
             g.fillRect(0, 0, getWidth(), getHeight());

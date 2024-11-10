@@ -1,20 +1,31 @@
+import java.util.ArrayList;
+
 public class Square {
     private int _x;
     private int _y;
 
-    private boolean _covered;
+    private boolean _visible;
     private boolean _hasMine;
     private boolean _flagged;
     private int _countAdjacentMines;
+
+    private ArrayList<SquareChangedCallback> _callbacks;
 
     public Square(int x, int y) {
         _x = x;
         _y = y;
 
-        _covered = true;
+        _visible = false;
         _hasMine = false;
         _flagged = false;
         _countAdjacentMines = 0;
+
+        _callbacks = new ArrayList<SquareChangedCallback>();
+    }
+
+    public void addSquareChangedCallback(SquareChangedCallback callback)
+    {
+        _callbacks.add(callback);
     }
 
     public int getX() {
@@ -30,7 +41,10 @@ public class Square {
     }
 
     public void setHasMine(boolean hasMine) {
-        _hasMine = hasMine;
+        if (_hasMine != hasMine) {
+            _hasMine = hasMine;
+            fireChangedCallbacks();
+        }
     }
 
     public boolean getFlagged() {
@@ -39,14 +53,18 @@ public class Square {
 
     public void toggleFlag() {
         _flagged = !_flagged;
+        fireChangedCallbacks();
     }
 
-    public boolean getCovered() {
-        return _covered;
+    public boolean getVisible() {
+        return _visible;
     }
 
-    public void setCovered(boolean covered) {
-        _covered = covered;
+    public void setVisible(boolean visible) {
+        if (_visible != visible) {
+            _visible = visible;
+            fireChangedCallbacks();
+        }
     }
 
     public int getCountAdjacentMines() {
@@ -54,6 +72,13 @@ public class Square {
     }
 
     public void setCountAdjacentMines(int count) {
-        _countAdjacentMines = count;
+        if (_countAdjacentMines != count) {
+            _countAdjacentMines = count;
+            fireChangedCallbacks();
+        }
+    }
+
+    private void fireChangedCallbacks() {
+        _callbacks.forEach((callback) -> callback.changed(this) );
     }
 }

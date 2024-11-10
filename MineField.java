@@ -1,7 +1,7 @@
 import java.util.*;
 
-public class MineField {
-    private final int _initialMineRadius = 2;
+public class MineField implements SquareChangedCallback {
+    private final int _initialMineRadius = 3;//2; // the radius to keep mines away when generating a new minefield
     private final double _mineChance = 20; // percent
     private final int[][] _adjacentLookups = new int[][] {
         { -1, -1 },
@@ -28,7 +28,9 @@ public class MineField {
 
         for (var row = 0; row < _height; row++) {
             for (var col = 0; col < _width; col++) {
-                _field[row][col] = new Square(col, row);
+                var square = new Square(col, row);
+                _field[row][col] = square;
+                square.addSquareChangedCallback(this);
             }
         }
     }
@@ -104,7 +106,7 @@ public class MineField {
             setMines(x, y);
         }
 
-        square.setCovered(false);
+        square.setVisible(true);
         var hasMine = square.getHasMine();
 
         if (!hasMine && square.getCountAdjacentMines() == 0) {
@@ -115,8 +117,8 @@ public class MineField {
     }
 
     private void uncoverAdjacent(Square square) {
-        getAdjacentSquares(square).stream().filter((neighbor) -> neighbor.getCovered()).forEach((neighbor) -> {
-            neighbor.setCovered(false);
+        getAdjacentSquares(square).stream().filter((neighbor) -> !neighbor.getVisible()).forEach((neighbor) -> {
+            neighbor.setVisible(true);
             if (neighbor.getCountAdjacentMines() == 0) {
                 uncoverAdjacent(neighbor);
             }
@@ -125,9 +127,7 @@ public class MineField {
 
     // This is used when the game is over (e.g. a mine was uncovered)
     public void uncoverAll() {
-        forEachSquare( (square, x, y) -> {
-            square.setCovered(false);
-        });
+        forEachSquare( (square, x, y) -> square.setVisible(true) );
     }
 
     private ArrayList<Square> getAdjacentSquares(Square center) {
@@ -153,6 +153,15 @@ public class MineField {
             for (var col = 0; col < _width; col++) {
                 func.run(_field[row][col], col, row);
             }
+        }
+    }
+
+    @Override
+    public void changed(Square square) {
+        // If the changed square is a mine and is now shown, then our game is over!
+        if (square.getHasMine() && square.getVisible()) {
+            // game over
+            uncoverAll();
         }
     }
 }

@@ -1,4 +1,6 @@
 import java.awt.*;
+import java.awt.event.*;
+
 import javax.swing.*;
 
 public class MineFieldView extends JPanel {
@@ -8,15 +10,11 @@ public class MineFieldView extends JPanel {
         super(new GridLayout(mineField.getHeight(), mineField.getWidth()));
         
         _mineField = mineField;
-    }
 
-    public void addSquareViews()
-    {
         var squares = _mineField.getSquares();
-        for (var r = 0; r < squares.length; r++) {
-            var row = squares[r];
-            for (var c = 0; c < row.length; c++) {
-                var squareView = new SquareView(_mineField, row[c]);
+        for (var y = 0; y < _mineField.getHeight(); y++) {
+            for (var x = 0; x < _mineField.getWidth(); x++) {
+                var squareView = new SquareView(_mineField, squares[x][y]);
                 squareView.setPreferredSize(new Dimension(30, 30));
 
                 add(squareView);
