@@ -19,13 +19,15 @@ public class MineField implements SquareChangedCallback {
     private int _width;
     private int _height;
     private boolean _initialized;
+    private GameState _gameState;
 
     public MineField(GameSettings settings) {
         _width = settings.getGridWidth();
         _height = settings.getGridHeight();
         _mineChance = settings.getMineChance();
-
         _initialized = false;
+        _gameState = GameState.IN_PROGRESS;
+
         _field = new Square[_height][_width];
         _allSquares = new ArrayList<Square>();
 
@@ -150,7 +152,17 @@ public class MineField implements SquareChangedCallback {
         return list;
     }
 
+    private void gameOver() {
+        _gameState = GameState.LOST;
+        uncoverAll();
+    }
+
     private void checkGameWon() {
+        if (_gameState != GameState.IN_PROGRESS) {
+            // We only care about games that are in progress
+            return;
+        }
+
         var hidden = _allSquares.stream().filter((square) -> !square.getVisible()).count();
         var hiddenMines = _allSquares.stream().filter((square) -> !square.getVisible() && square.getHasMine()).count();
 
@@ -165,7 +177,7 @@ public class MineField implements SquareChangedCallback {
         // If the changed square is a mine and is now shown, then our game is over!
         if (square.getHasMine() && square.getVisible()) {
             // game over
-            uncoverAll();
+            gameOver();
         } else {
             checkGameWon();
         }
