@@ -2,7 +2,6 @@ import java.util.*;
 
 public class MineField implements SquareChangedCallback {
     private final int _initialMineRadius = 3;//2; // the radius to keep mines away when generating a new minefield
-    private final double _mineChance = 20; // percent
     private final int[][] _adjacentLookups = new int[][] {
         { -1, -1 },
         { -1, 0 },
@@ -14,18 +13,20 @@ public class MineField implements SquareChangedCallback {
         { 1, 1 }
     };
 
+    private int _mineChance; // value is percent (e.g. 20 == 20%)
     private Square[][] _field;
     private ArrayList<Square> _allSquares;
     private int _width;
     private int _height;
     private boolean _initialized;
 
-    public MineField(int width, int height) {
-        _width = width;
-        _height = height;
+    public MineField(GameSettings settings) {
+        _width = settings.getGridWidth();
+        _height = settings.getGridHeight();
+        _mineChance = settings.getMineChance();
 
         _initialized = false;
-        _field = new Square[height][width];
+        _field = new Square[_height][_width];
         _allSquares = new ArrayList<Square>();
 
         for (var row = 0; row < _height; row++) {

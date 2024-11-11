@@ -19,15 +19,9 @@ public class GameWindow extends JFrame {
         if (_currentGame != null) {
             remove(_currentGame);
         }
-        
-        var gridSize = switch (gameMode) {
-            case GameMode.EASY -> 10;
-            case GameMode.REGULAR -> 20;
-            case GameMode.HARD -> 30;
-            default -> 20;
-        };
 
-        var mf = new MineField(gridSize, gridSize);
+        var settings = new GameSettings(gameMode);
+        var mf = new MineField(settings);
         _currentGame = new MineFieldView(mf);
 
         add(_currentGame);
