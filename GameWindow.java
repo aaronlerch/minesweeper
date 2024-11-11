@@ -11,7 +11,7 @@ public class GameWindow extends JFrame {
     }
 
     public void startDefaultGame() {
-        startGame(GameMode.REGULAR);
+        startGame(GameMode.INTERMEDIATE);
     }
 
     public void startGame(GameMode gameMode) {
@@ -36,14 +36,14 @@ public class GameWindow extends JFrame {
         var file = new JMenu("File");
         var newGame = new JMenu("New Game");
 
-        var easyGame = new JMenuItem("Easy");
-        easyGame.addActionListener(e -> startGame(GameMode.EASY));
+        var easyGame = new JMenuItem("Beginner");
+        easyGame.addActionListener(e -> startGame(GameMode.BEGINNER));
 
-        var regularGame = new JMenuItem("Regular");
-        regularGame.addActionListener(e -> startGame(GameMode.REGULAR));
+        var regularGame = new JMenuItem("Intermediate");
+        regularGame.addActionListener(e -> startGame(GameMode.INTERMEDIATE));
 
-        var hardGame = new JMenuItem("Hard");
-        hardGame.addActionListener(e -> startGame(GameMode.HARD));
+        var hardGame = new JMenuItem("Expert");
+        hardGame.addActionListener(e -> startGame(GameMode.EXPERT));
 
         var exit = new JMenuItem(new AbstractAction("Exit") {
             public void actionPerformed(ActionEvent ae) {

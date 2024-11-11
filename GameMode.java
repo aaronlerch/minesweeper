@@ -1,6 +1,6 @@
 
 public enum GameMode {
-    EASY,
-    REGULAR,
-    HARD
+    BEGINNER,
+    INTERMEDIATE,
+    EXPERT
 }

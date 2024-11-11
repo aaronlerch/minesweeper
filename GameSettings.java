@@ -13,16 +13,16 @@ public class GameSettings {
         _mineChance = 20;
 
         _gridWidth = _gridHeight = switch (_gameMode) {
-            case GameMode.EASY -> 10;
-            case GameMode.REGULAR -> 20;
-            case GameMode.HARD -> 30;
+            case GameMode.BEGINNER -> 10;
+            case GameMode.INTERMEDIATE -> 20;
+            case GameMode.EXPERT -> 30;
             default -> 20;
         };
 
         _mineChance = switch (_gameMode) {
-            case GameMode.EASY -> 10;
-            case GameMode.REGULAR -> 20;
-            case GameMode.HARD -> 30;
+            case GameMode.BEGINNER -> 10;
+            case GameMode.INTERMEDIATE -> 20;
+            case GameMode.EXPERT -> 30;
             default -> 20;
         };
     }
