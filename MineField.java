@@ -15,6 +15,7 @@ public class MineField implements SquareChangedCallback {
     };
 
     private Square[][] _field;
+    private ArrayList<Square> _allSquares;
     private int _width;
     private int _height;
     private boolean _initialized;
@@ -25,11 +26,13 @@ public class MineField implements SquareChangedCallback {
 
         _initialized = false;
         _field = new Square[height][width];
+        _allSquares = new ArrayList<Square>();
 
         for (var row = 0; row < _height; row++) {
             for (var col = 0; col < _width; col++) {
                 var square = new Square(col, row);
                 _field[row][col] = square;
+                _allSquares.add(square);
                 square.addSquareChangedCallback(this);
             }
         }
@@ -73,8 +76,10 @@ public class MineField implements SquareChangedCallback {
         var lowerBoundY = initialY - _initialMineRadius;
         var upperBoundY = initialY + _initialMineRadius;
 
-        forEachSquare( (square, x, y) -> {
+        _allSquares.forEach((square) -> {
             var hasMine = rand.nextInt(100) < _mineChance;
+            var x = square.getX();
+            var y = square.getY();
 
             if (x >= lowerBoundX && x <= upperBoundX && y >= lowerBoundY && y <= upperBoundY) {
                 // Ensure no mines in these squares, they are in the radius of initial exposure
@@ -84,7 +89,7 @@ public class MineField implements SquareChangedCallback {
             square.setHasMine(hasMine);
         });
 
-        forEachSquare( (square, x, y) -> {
+        _allSquares.forEach((square) -> {
             var list = getAdjacentSquares(square);
             var count = list.stream().mapToInt((neighbor) -> neighbor.getHasMine() ? 1 : 0).sum();
             square.setCountAdjacentMines(count);
@@ -127,7 +132,7 @@ public class MineField implements SquareChangedCallback {
 
     // This is used when the game is over (e.g. a mine was uncovered)
     public void uncoverAll() {
-        forEachSquare( (square, x, y) -> square.setVisible(true) );
+        _allSquares.forEach((square) -> square.setVisible(true) );
     }
 
     private ArrayList<Square> getAdjacentSquares(Square center) {
@@ -144,15 +149,13 @@ public class MineField implements SquareChangedCallback {
         return list;
     }
 
-    interface OnAllFunction {
-        void run(Square square, int x, int y);
-    }
-    
-    private void forEachSquare(OnAllFunction func) {
-        for (var row = 0; row < _height; row++) {
-            for (var col = 0; col < _width; col++) {
-                func.run(_field[row][col], col, row);
-            }
+    private void checkGameWon() {
+        var hidden = _allSquares.stream().filter((square) -> !square.getVisible()).count();
+        var hiddenMines = _allSquares.stream().filter((square) -> !square.getVisible() && square.getHasMine()).count();
+
+        if (hidden > 0 && hidden == hiddenMines) {
+            // Things are still hidden (e.g. game board isn't exposed) and everything hidden is a mine!
+            System.out.println("YOU WON THE GAME!!!");
         }
     }
 
@@ -162,6 +165,8 @@ public class MineField implements SquareChangedCallback {
         if (square.getHasMine() && square.getVisible()) {
             // game over
             uncoverAll();
+        } else {
+            checkGameWon();
         }
     }
 }

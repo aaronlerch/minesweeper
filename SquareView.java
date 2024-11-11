@@ -3,7 +3,7 @@ import java.awt.event.*;
 
 import javax.swing.*;
 
-public class SquareView extends JPanel implements MouseListener, SquareChangedCallback {
+public class SquareView extends JComponent implements MouseListener, SquareChangedCallback {
     private final double _interiorScale = 0.6;
     
     private MineField _mineField;
@@ -12,27 +12,36 @@ public class SquareView extends JPanel implements MouseListener, SquareChangedCa
     public SquareView(MineField mineField, Square square) {
         _mineField = mineField;
         _square = square;
+
         square.addSquareChangedCallback(this);
         addMouseListener(this);
     }
 
+    public void uncover() {
+        _mineField.uncover(_square);
+    }
+
+    public void flag() {
+        _mineField.flag(_square);
+    }
+
+    @Override
     public void mouseClicked(MouseEvent e) {
     }
 
+    @Override
     public void mousePressed(MouseEvent e) {
         var button = e.getButton();
 
         if (button == MouseEvent.BUTTON1) {
-            _mineField.uncover(_square);
+            uncover();
         }
         else if (button == MouseEvent.BUTTON3) {
-            _mineField.flag(_square);
+            flag();
         }
-
-        //getParent().repaint();
-        //repaint();
     }
 
+    @Override
     public void mouseReleased(MouseEvent e) {
     }
 
@@ -70,14 +79,18 @@ public class SquareView extends JPanel implements MouseListener, SquareChangedCa
         var scaledBottom = scaledY + scaledHeight;
 
         if (!_square.getVisible()) {
-            var preBGColor = g.getColor();
+            var c = g.getColor();
+
             g.setColor(Color.LIGHT_GRAY);
             g.fillRect(0, 0, getWidth(), getHeight());
-            g.setColor(preBGColor);
 
             if (_square.getFlagged()) {
+                // Draw the flag
+                g.setColor(Color.RED);
                 g.fillOval(scaledX, scaledY, scaledWidth, scaledHeight);
             }
+
+            g.setColor(c);
         }
         else {
             // Draw the number, or a mine!

@@ -1,3 +1,5 @@
+import java.awt.KeyboardFocusManager;
+
 import javax.swing.*;
 
 public class Main {
@@ -6,8 +8,8 @@ public class Main {
         window.setSize(800, 800);
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        var width = 20;
-        var height = 20;
+        var width = 10;
+        var height = 10;
         var mf = new MineField(width, height);
         var view = new MineFieldView(mf);
 
@@ -15,5 +17,6 @@ public class Main {
         window.pack();
 
         window.setVisible(true);
+        view.requestFocusInWindow();
     }
 }
