@@ -5,6 +5,10 @@ import javax.swing.*;
 
 public class SquareView extends JComponent implements MouseListener, SquareChangedCallback {
     private final double _interiorScale = 0.6;
+    private final Color ONE_BLUE = new Color(0, 00, 255);
+    private final Color TWO_GREEN = new Color(0, 66, 0);
+    private final Color THREE_RED = new Color(255, 0, 0);
+    private final Color FOUR_DARK_BLUE = new Color(0, 0, 99);
     
     private MineField _mineField;
     private Square _square;
@@ -68,7 +72,10 @@ public class SquareView extends JComponent implements MouseListener, SquareChang
         super.paintComponent(g);
 
         var color = g.getColor();
-        g.setColor(Color.BLACK);
+
+        // Draw background
+        g.setColor(Color.LIGHT_GRAY);
+        g.fillRect(0, 0, getWidth(), getHeight());
 
         var scaledWidth = (int)(getWidth() * _interiorScale);
         var scaledHeight = (int)(getHeight() * _interiorScale);
@@ -79,9 +86,7 @@ public class SquareView extends JComponent implements MouseListener, SquareChang
         var scaledBottom = scaledY + scaledHeight;
 
         if (!_square.getVisible()) {
-            var c = g.getColor();
-
-            g.setColor(Color.LIGHT_GRAY);
+            g.setColor(Color.GRAY);
             g.fillRect(0, 0, getWidth(), getHeight());
 
             if (_square.getFlagged()) {
@@ -89,8 +94,6 @@ public class SquareView extends JComponent implements MouseListener, SquareChang
                 g.setColor(Color.RED);
                 g.fillOval(scaledX, scaledY, scaledWidth, scaledHeight);
             }
-
-            g.setColor(c);
         }
         else {
             // Draw the number, or a mine!
@@ -103,12 +106,24 @@ public class SquareView extends JComponent implements MouseListener, SquareChang
                 var f = g.getFont();
                 var bigFont = new Font(f.getName(), f.getStyle(), scaledWidth);
                 g.setFont(bigFont);
+                g.setColor(getColorForNumber(count));
                 g.drawString(Integer.toString(_square.getCountAdjacentMines()), scaledX, scaledBottom);
                 g.setFont(f);
             }
         }
 
+        g.setColor(Color.BLACK);
         g.drawRect(0, 0, getWidth(), getHeight());
         g.setColor(color);
+    }
+
+    private Color getColorForNumber(int num) {
+        return switch (num) {
+            case 1 -> ONE_BLUE;
+            case 2 -> TWO_GREEN;
+            case 3 -> THREE_RED;
+            case 4 -> FOUR_DARK_BLUE;
+            default -> Color.BLACK;
+        };
     }
 }
